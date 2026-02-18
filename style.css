@@ -1,0 +1,1036 @@
+:root {
+    --primary: #00f3ff;   /* Cyber Blue */
+    --secondary: #bd00ff; /* Cyber Purple */
+    --bg-dark: #050505;
+    --text-main: #ffffff;
+    --text-muted: #888888;
+    --glass: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.1);
+    --mac-bg: rgba(15, 15, 15, 0.8);
+    
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Performance optimizations */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Smooth transitions */
+*,
+*::before,
+*::after {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+}
+
+html.lenis {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
+}
+
+/* ThreeJS Canvas */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    opacity: 0.6;
+}
+
+/* Typography Helpers */
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+}
+
+.highlight {
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
+.center-text {
+    text-align: center;
+}
+
+/* Loading Screen */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.loader-text {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    letter-spacing: 5px;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    text-transform: uppercase;
+}
+
+.loader-bar {
+    width: 300px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+/* Navigation */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 2rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+    text-shadow: 0 0 8px var(--primary);
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+    opacity: 0.3;
+    pointer-events: none;
+    animation: pulse 8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.5; }
+}
+
+.hero-title {
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 1rem;
+    background: linear-gradient(to bottom, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    transform: translateY(100px);
+    position: relative;
+    z-index: 1;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    letter-spacing: 5px;
+    color: var(--primary);
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(20px);
+    position: relative;
+    z-index: 1;
+}
+
+.hero-tagline {
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    position: relative;
+    z-index: 1;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    z-index: 1;
+}
+
+.scroll-indicator span {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+}
+
+.scroll-indicator .line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--primary), transparent);
+}
+
+/* Sections General */
+section {
+    padding: 8rem 5%;
+    position: relative;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 3rem;
+    margin-bottom: 4rem;
+}
+
+/* About Section */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.about-desc {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #ccc;
+    margin-bottom: 1.5rem;
+}
+
+.glass-panel {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    padding: 3rem;
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(189, 0, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Japanese Welcome Text */
+.japanese-welcome {
+    margin: 2rem 0 3rem 0;
+    padding: 2rem;
+    background: rgba(0, 243, 255, 0.05);
+    border-left: 3px solid var(--primary);
+    border-radius: 8px;
+}
+
+.japanese-text {
+    font-family: 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+}
+
+.japanese-translation {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+/* About Description with Heart */
+.about-heart {
+    color: var(--primary);
+    font-weight: 600;
+    border-left: 3px solid var(--secondary);
+    padding-left: 1.5rem;
+    font-style: italic;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background: rgba(0, 243, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+}
+
+.stat-number {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Mission Badges */
+.mission-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    background: rgba(189, 0, 255, 0.1);
+    border: 1px solid rgba(189, 0, 255, 0.3);
+    border-radius: 20px;
+    color: var(--secondary);
+    transition: all 0.3s ease;
+}
+
+.badge:hover {
+    background: rgba(189, 0, 255, 0.2);
+    border-color: var(--secondary);
+    transform: scale(1.05);
+}
+
+/* Philosophy Panel */
+.philosophy-panel {
+    margin-top: 2rem;
+    background: rgba(189, 0, 255, 0.03);
+    border: 1px solid rgba(189, 0, 255, 0.2);
+}
+
+.philosophy-subtitle {
+    color: var(--secondary);
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* ========== CULTURE SECTION ========== */
+.culture-section {
+    padding: 8rem 5%;
+    position: relative;
+    background: linear-gradient(180deg, transparent 0%, rgba(189, 0, 255, 0.03) 100%);
+}
+
+.culture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.culture-card {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.culture-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.1) 0%, rgba(189, 0, 255, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.culture-card:hover::before {
+    opacity: 1;
+}
+
+.culture-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 20px 50px rgba(0, 243, 255, 0.2);
+}
+
+.culture-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.culture-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    position: relative;
+    z-index: 1;
+}
+
+.culture-card p {
+    color: #ccc;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Manifesto Box */
+.manifesto-box {
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.manifesto-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 8s ease-in-out infinite;
+}
+
+.manifesto-quote {
+    font-family: var(--font-heading);
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    color: white;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1rem;
+}
+
+.manifesto-author {
+    font-size: 1rem;
+    color: var(--secondary);
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== MAC MOCKUP SHOWCASE SECTION ========== */
+.work-section {
+    padding: 8rem 5%;
+    position: relative;
+    overflow: hidden;
+}
+
+.work-container {
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    padding: 50px 0;
+}
+
+.mac-mockup {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--mac-bg);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    will-change: transform;
+}
+
+.mac-mockup:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 60px 120px rgba(0, 243, 255, 0.2);
+}
+
+.mac-header {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dots {
+    display: flex;
+    gap: 8px;
+}
+
+.dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff5f56;
+}
+
+.dots span:nth-child(2) {
+    background: #ffbd2e;
+}
+
+.dots span:nth-child(3) {
+    background: #27c93f;
+}
+
+.mac-address-bar {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 15px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--primary);
+    flex-grow: 0.5;
+    text-align: center;
+    font-family: var(--font-body);
+    letter-spacing: 0.5px;
+}
+
+.mac-content {
+    display: flex;
+    padding: 40px;
+    gap: 40px;
+    align-items: center;
+}
+
+.mac-text {
+    flex: 1;
+}
+
+.mac-text h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    font-family: var(--font-heading);
+}
+
+.mac-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+.mac-image-slot {
+    flex: 1.5;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mac-image-slot img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: brightness(0.8);
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.mac-mockup:hover .mac-image-slot img {
+    transform: scale(1.05);
+    filter: brightness(1);
+}
+
+/* ========== END MAC MOCKUP SECTION ========== */
+
+/* Parallax Effects */
+.parallax-slow {
+    will-change: transform;
+}
+
+.parallax-medium {
+    will-change: transform;
+}
+
+.parallax-fast {
+    will-change: transform;
+}
+
+/* Enhanced Scroll Animations */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.fade-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+}
+
+.fade-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+}
+
+.scale-in {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+/* Team Section */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.team-card {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    border-radius: 12px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.05) 0%, rgba(189, 0, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.team-card:hover::before {
+    opacity: 1;
+}
+
+.team-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px -10px rgba(0, 243, 255, 0.3);
+    background: rgba(0, 243, 255, 0.05);
+}
+
+.card-header {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+}
+
+.card-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.card-header .role {
+    color: var(--secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.card-body p {
+    color: #ccc;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tech-stack span {
+    font-size: 0.75rem;
+    font-family: monospace;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    color: var(--text-muted);
+    transition: 0.3s;
+}
+
+.team-card:hover .tech-stack span {
+    border-color: var(--secondary);
+    color: white;
+}
+
+/* Member Image Styles (if needed for team cards with images) */
+.member-img {
+    height: 300px;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.member-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.team-card:hover .member-img img {
+    transform: scale(1.1);
+}
+
+/* Contact Section */
+.contact-section {
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(to top, #000, transparent);
+}
+
+.contact-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.contact-item {
+    text-align: center;
+}
+
+.contact-item .label {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.contact-link {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    transition: 0.3s;
+    position: relative;
+    display: inline-block;
+}
+
+.contact-link:hover {
+    color: var(--primary);
+    text-shadow: 2px 2px 0px var(--secondary);
+}
+
+footer {
+    text-align: center;
+    margin-top: 5rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Simple hiding for mobile, ideally would be a burger menu */
+    }
+    
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    /* Stats Grid Mobile */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+    }
+    
+    /* Japanese Text Mobile */
+    .japanese-text {
+        font-size: 1.2rem;
+    }
+    
+    /* Culture Grid Mobile */
+    .culture-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .manifesto-box {
+        padding: 2rem;
+    }
+    
+    .manifesto-quote {
+        font-size: 1.2rem;
+    }
+    
+    /* Mac Mockup Responsive */
+    .mac-content {
+        flex-direction: column;
+        padding: 20px;
+    }
+    
+    .mac-text h3 {
+        font-size: 1.5rem;
+    }
+    
+    .mac-text p {
+        font-size: 1rem;
+    }
+    
+    .work-container {
+        gap: 60px;
+        padding: 30px 0;
+    }
+    
+    .mac-mockup {
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .mac-header {
+        padding: 10px 15px;
+    }
+    
+    .mac-address-bar {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+    
+    .dots span {
+        width: 8px;
+        height: 8px;
+    }
+}
+/* ============================================
+   WEB-HOX VISIBILITY FIX
+   Append this block to the END of style.css
+   ============================================ */
+
+/*
+  ROOT CAUSE: Two bugs were making elements invisible:
+
+  1. The global transition rule:
+       * { transition: transform 0.3s ease, opacity 0.3s ease; }
+     ...was fighting GSAP. GSAP sets opacity:0 to prepare animations,
+     but the CSS transition would then resist GSAP's opacity changes,
+     leaving elements stuck at opacity:0.
+
+  2. GSAP's ScrollTrigger animations use gsap.from() which sets
+     the START state (opacity:0, y:50, etc.) immediately on init.
+     If the element is already in the viewport, the trigger may
+     not fire correctly — leaving it hidden forever.
+
+  FIX STRATEGY:
+  - All affected elements default to opacity:1 (always visible).
+  - When GSAP loads successfully, it adds "gsap-ready" to <body>.
+  - Only then are GSAP's hidden start-states allowed to apply.
+  - If GSAP fails for any reason, content stays visible.
+  - The global * transition is replaced with targeted transitions only.
+*/
+
+/* --- Step 1: Remove the problematic blanket transition --- */
+* {
+    transition: color 0.3s ease, background-color 0.3s ease,
+                border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* --- Step 2: Restore intentional hover transitions only where needed --- */
+.stat-item,
+.badge,
+.culture-card,
+.team-card,
+.mac-mockup,
+.mac-image-slot img,
+.member-img img,
+.nav-links a,
+.contact-link,
+.glass-panel {
+    transition: transform 0.3s ease, opacity 0.3s ease, color 0.3s ease,
+                background-color 0.3s ease, border-color 0.3s ease,
+                box-shadow 0.3s ease !important;
+}
+
+/* --- Step 3: Guarantee visibility for all GSAP-animated elements --- */
+.about-desc,
+.about-heart,
+.stats-grid,
+.stat-item,
+.mission-badges,
+.badge,
+.glass-panel,
+.culture-grid,
+.culture-card,
+.contact-wrapper,
+.contact-item,
+.japanese-welcome,
+.manifesto-box,
+.mac-mockup,
+.team-card {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+}
+
+/* --- Step 4: Only when GSAP is confirmed loaded, let it animate --- */
+body.gsap-ready .about-desc,
+body.gsap-ready .about-heart,
+body.gsap-ready .stats-grid,
+body.gsap-ready .stat-item,
+body.gsap-ready .mission-badges,
+body.gsap-ready .badge,
+body.gsap-ready .glass-panel,
+body.gsap-ready .culture-card,
+body.gsap-ready .contact-item,
+body.gsap-ready .japanese-welcome,
+body.gsap-ready .manifesto-box,
+body.gsap-ready .mac-mockup,
+body.gsap-ready .team-card {
+    opacity: unset !important;
+    transform: unset !important;
+    visibility: unset !important;
+}
+
